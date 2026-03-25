@@ -1,0 +1,13 @@
+{
+  "python.analysis.typeCheckingMode": "standard",
+  "python.analysis.diagnosticMode": "workspace",
+  "python.analysis.autoImportCompletions": true,
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "python.analysis.exclude": [
+    "**/*.pyi",
+    "**/__pycache__",
+    ".venv/**",
+    ".git"
+  ]
+}

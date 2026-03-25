@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "unplayplay"
+version = "0.0.1"
+requires-python = ">=3.11"
+
+dynamic = ["dependencies"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"unplayplay.generated" = ["*.json"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+src = ["src"]
+extend-exclude = [
+    "src/unplayplay/generated"
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
