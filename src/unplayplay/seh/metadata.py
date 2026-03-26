@@ -24,11 +24,8 @@ def get_ip_to_state_entries(rf: RuntimeFunction) -> list[IPToStateEntry4]:
 
 
 def iter_catchable_types(throw_info: ThrowInfo) -> Iterator[CatchableType]:
-    cta = throw_info.catchable_type_array
-    if cta is None:
-        return
-
-    for ct in cta.catchable_types:
+    cta: list[CatchableType | None] = throw_info.catchable_type_array.catchable_types
+    for ct in cta:
         if ct is not None:
             yield ct
 

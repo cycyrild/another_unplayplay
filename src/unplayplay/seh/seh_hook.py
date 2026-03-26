@@ -1,6 +1,5 @@
 import logging
 
-from unicorn import UC_HOOK_CODE
 from unicorn.unicorn import Uc
 from unicorn.x86_const import (
     UC_X86_REG_RCX,
@@ -15,25 +14,7 @@ from unplayplay.seh.state import SehRuntimeState
 logger = logging.getLogger(__name__)
 
 
-def install_seh_hook(mu: Uc, state: SehRuntimeState) -> None:
-    logger.debug("image base            : 0x%X", state.image_base)
-    logger.debug("_CxxThrowException   : 0x%X", state.cxx_throw_exception)
-    logger.debug("dumped functions     : %d", len(state.runtime_functions))
-    logger.debug("dumped throw infos   : %d", len(state.throw_infos))
-
-    mu.hook_add(
-        UC_HOOK_CODE,
-        hook_code,
-        state,
-        begin=state.cxx_throw_exception,
-        end=state.cxx_throw_exception,
-    )
-
-
-def hook_code(mu: Uc, address: int, _size: int, state: SehRuntimeState):
-    if address != state.cxx_throw_exception:
-        return
-
+def seh_hook(mu: Uc, address: int, _size: int, state: SehRuntimeState):
     exception_object_ptr = mu.reg_read(UC_X86_REG_RCX)
     throw_info_ptr = mu.reg_read(UC_X86_REG_RDX)
 
@@ -44,9 +25,7 @@ def hook_code(mu: Uc, address: int, _size: int, state: SehRuntimeState):
     logger.debug("pThrowInfo: 0x%X", throw_info_ptr)
 
     try:
-        handled = dispatch_cpp_exception(
-            state, mu, exception_object_ptr, throw_info_ptr
-        )
+        handled = dispatch_cpp_exception(state, mu, exception_object_ptr, throw_info_ptr)
     except Exception as exc:
         logger.error("dispatch error: %s", exc)
         raise

@@ -2,21 +2,16 @@ from dataclasses import dataclass
 
 from unicorn.unicorn import Uc
 
-from unplayplay.emu.heap_allocator import HeapAllocator
 from unplayplay.emu.heap_chunk import HeapChunk
 
 
 @dataclass(slots=True)
 class EmuSession:
     mu: Uc
-    image_base: int
-    image_size: int
-    heap: HeapAllocator
-    vm_object_transform: int
-    vm_runtime_init: int
-    aes_key_va: int
+
     vm_obj: HeapChunk
     obfuscated_key: HeapChunk
-    content_id: HeapChunk
+    init_value: HeapChunk
     derived_key: HeapChunk
+
     captured_aes_key: bytearray | None

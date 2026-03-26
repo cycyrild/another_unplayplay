@@ -34,9 +34,7 @@ MAX_INLINE_CATCH_OBJECT_SIZE = 0x400
 logger = logging.getLogger(__name__)
 
 
-def lookup_runtime_function(
-    state: SehRuntimeState, control_pc_va: int
-) -> RuntimeFunction | None:
+def lookup_runtime_function(state: SehRuntimeState, control_pc_va: int) -> RuntimeFunction | None:
     control_pc_rva = control_pc_va - state.image_base
     index = bisect_right(state.runtime_function_starts, control_pc_rva) - 1
     if index < 0:
@@ -58,9 +56,7 @@ def build_thrown_exception_from_static_data(
     if throw_info is None:
         raise RuntimeError(f"Unknown ThrowInfo RVA 0x{throw_info_rva:X}")
 
-    return ThrownException(
-        object_va=pExceptionObject, throw_info_va=pThrowInfo, throw_info=throw_info
-    )
+    return ThrownException(object_va=pExceptionObject, throw_info_va=pThrowInfo, throw_info=throw_info)
 
 
 def lookup_ip_state(ip_to_state_map: list[IPToStateEntry4], control_pc_rva: int) -> int:
@@ -96,10 +92,7 @@ def find_matching_handler(
 
                 handler_type_va = state.image_base + handler.disp_type
                 for ct in iter_catchable_types(exc.throw_info):
-                    if (
-                        catchable_type_descriptor_va(state.image_base, ct)
-                        == handler_type_va
-                    ):
+                    if catchable_type_descriptor_va(state.image_base, ct) == handler_type_va:
                         return handler, ct
 
     return None
@@ -125,12 +118,8 @@ def materialize_catch_object(
         write_u64(mu, dst, src)
 
 
-def dispatch_cpp_exception(
-    state: SehRuntimeState, mu: Uc, pExceptionObject: int, pThrowInfo: int
-) -> bool:
-    exc: ThrownException = build_thrown_exception_from_static_data(
-        state, pExceptionObject, pThrowInfo
-    )
+def dispatch_cpp_exception(state: SehRuntimeState, mu: Uc, pExceptionObject: int, pThrowInfo: int) -> bool:
+    exc: ThrownException = build_thrown_exception_from_static_data(state, pExceptionObject, pThrowInfo)
     ctx: VirtualContext = capture_context_from_throw_entry(mu)
 
     logger.debug("catchable types:")
@@ -147,9 +136,7 @@ def dispatch_cpp_exception(
 
         rf = lookup_runtime_function(state, control_pc)
         if rf is None:
-            logger.debug(
-                "no dumped metadata for 0x%X; treating frame as leaf", control_pc
-            )
+            logger.debug("no dumped metadata for 0x%X; treating frame as leaf", control_pc)
             unwind_leaf_frame(mu, ctx)
             continue
 
@@ -170,9 +157,7 @@ def dispatch_cpp_exception(
             materialize_catch_object(mu, ctx, exc, handler, ct)
 
             ctx.rsp -= 8
-            write_u64(
-                mu, ctx.rsp, state.image_base + handler_continuation_rva(rf, handler)
-            )
+            write_u64(mu, ctx.rsp, state.image_base + handler_continuation_rva(rf, handler))
 
             ctx.regs[UnwindRegNum.RCX] = exc.object_va
             ctx.regs[UnwindRegNum.RDX] = establisher_frame

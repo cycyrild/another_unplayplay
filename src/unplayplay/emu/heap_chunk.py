@@ -17,9 +17,7 @@ class HeapChunk:
 
     def write(self, data: bytes) -> None:
         if len(data) != self._size:
-            raise ValueError(
-                f"Data size {len(data)} does not match chunk size {self._size}"
-            )
+            raise ValueError(f"Data size {len(data)} does not match chunk size {self._size}")
         self._mu.mem_write(self._addr, data)
 
     def read(self) -> bytearray:

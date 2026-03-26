@@ -8,7 +8,6 @@ from unplayplay.seh.registers import UnwindRegNum
 @dataclass(slots=True, frozen=True)
 class SehRuntimeState:
     image_base: int
-    cxx_throw_exception: int
     runtime_functions: list[RuntimeFunction]
     throw_infos: dict[int, ThrowInfo]
     runtime_function_starts: list[int]
