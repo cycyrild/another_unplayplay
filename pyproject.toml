@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "unplayplay"
 version = "0.0.1"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 
 dynamic = ["dependencies"]
 
@@ -24,7 +24,7 @@ dependencies = {file = ["requirements.txt"]}
 
 [tool.ruff]
 line-length = 88
-target-version = "py311"
+target-version = "py310"
 
 src = ["src"]
 extend-exclude = [
