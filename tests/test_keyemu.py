@@ -3,33 +3,33 @@ from pathlib import Path
 
 from unplayplay import KeyEmu
 
-# obfuscated_key linked to "02b785ef12f5046c21411a778a932c0d"
+# obfuscated_key linked to "0255ccf0c49f550f89efb03b9bdae112"
 
 TEST_VECTORS = [
     (
         # spotify:track:69kOkLUCkxIZYexIgSG8rq (ogg-vorbis-160)
         "2f43127d80edc9cd9f12f441e1cb7904b680f9da",  # file_id
-        "b5feb4e01f9c1b668abcaebc721774fc",  # obfuscated_key
+        "08f5e1c38489f09a05433e5c8a637eb9",  # obfuscated_key
         "a503a84c1dc9271460cc13f142e0bae2",  # aes_key
     ),
     (
         "1a8e5b04837957617162724232b0c96922222447",  # file_id
-        "1198d1e82d685fbdb6ed583a691e0781",  # obfuscated_key
+        "9a295acc4ef6ba2ae075fda5e177afbb",  # obfuscated_key
         "c3206271b4c70fff8e4ac3993c4dae8a",  # aes_key
     ),
     (
         "cf1bd197a6f5d613fc856bd689e43c0f4069b800",
-        "d97f61d454cafdb132b97dd196900c21",
+        "00351f75deb81d6aa074c1eac048edb4",
         "8d86fb522c00729f35b34d60b165b922",
     ),
     (
         "71df45edb4748a8b1bd4126ded06063674745182",
-        "09bac7c2add68fd0897aa147b3801564",
+        "1693ee71b94f6f05ed387bb6df2c7a6c",
         "0fd3998b706247b3474b2d3cf6d8e31f",
     ),
     (
         "894813d0a3113c97ab601b0f65afb9543d96ec32",
-        "d021cc4efb3cc23be8b1d68f09420e21",
+        "9ecc21308d12e3f1d5c17f38cca0553a",
         "4d442c155f9a95258f613a89be957be9",
     ),
 ]

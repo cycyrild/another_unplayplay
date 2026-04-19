@@ -8,7 +8,7 @@ from unicorn.x86_const import (
     UC_X86_REG_RSP,
 )
 
-from unplayplay.consts import RT_HOOKS
+from unplayplay.consts import RT_HOOKS, VM_HOOKS
 from unplayplay.emu.addressing import rebase
 
 logger = logging.getLogger(__name__)
@@ -29,6 +29,7 @@ def apply_stubs(mu: Uc, image_base: int):
         RT_HOOKS.MTX_LOCK_VA,
         RT_HOOKS.CND_WAIT_VA,
         RT_HOOKS.MTX_UNLOCK_VA,
+        VM_HOOKS.FILL_RANDOM_BYTES_VA,
     ]
 
     for ida_va in targets:
