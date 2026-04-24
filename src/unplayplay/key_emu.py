@@ -82,7 +82,7 @@ class KeyEmu:
 
         vm_obj = heap.alloc(EMULATOR_SIZES.VM_OBJECT)
         vm_rt_context = heap.alloc(EMULATOR_SIZES.RT_CONTEXT)
-        vm_init_value = heap.alloc(len(VM_CONSTANTS.INIT_VALUE))
+        vm_init_value = heap.alloc(EMULATOR_SIZES.INIT_VALUE)
 
         vm_init_value.write(VM_CONSTANTS.INIT_VALUE)
 
