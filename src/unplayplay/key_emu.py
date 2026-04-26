@@ -12,7 +12,6 @@ from unplayplay.consts import (
     AES_KEY_HOOK,
     EMULATOR_SIZES,
     MEM,
-    PATHS,
     RT_DATA,
     RT_FUNCTIONS,
     SP_CLT_SHA2,
@@ -63,11 +62,7 @@ class KeyEmu:
         self._runtime_context_va = self.rebase(RT_DATA.RUNTIME_CONTEXT_VA)
         self._cxx_throw_exception_va = self.rebase(RT_FUNCTIONS.CXX_THROW_EXCEPTION_VA)
 
-        self._seh_state = build_state(
-            image_base=self._image_base,
-            runtime_functions_path=PATHS.RUNTIME_FUNCTIONS_JSON,
-            throw_infos_path=PATHS.THROW_INFOS_JSON,
-        )
+        self._seh_state = build_state(image_base=self._image_base)
 
         self._vm_obj_blob: bytes | None = None
         self._vm_obj_blob_lock = threading.Lock()

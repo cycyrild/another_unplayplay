@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "unplayplay"
-version = "0.0.6"
+version = "0.0.7"
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.10"
 description = "Playplay-based AES key generator for Spotify."
@@ -22,9 +22,6 @@ include-package-data = false
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
-[tool.setuptools.package-data]
-"unplayplay.generated" = ["*.json"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}

@@ -8,6 +8,7 @@
     "**/*.pyi",
     "**/__pycache__",
     ".venv/**",
-    ".git"
+    ".git",
+    "src/unplayplay/generated/**"
   ]
 }

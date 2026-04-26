@@ -1,19 +1,9 @@
-from pathlib import Path
-
-PACKAGE_DIR = Path(__file__).resolve().parent
-
 PLAYPLAY_TOKEN: bytes = bytes.fromhex("027b23a2442c86ca4b004ddfef291954")
 SP_CLT_SHA2: bytes = bytes.fromhex("9CAFE1CAD176024485F8840B72F6747D5B87885B0423B1DF005ADF088EF80CE8")
 
 SP_CLT_VERSION = "1.2.88.483"
 
 # Linked to the Spotify.dll "SP_CLT_VERSION" - Win32_x86_64
-
-
-class PATHS:
-    GENERATED_DIR = PACKAGE_DIR / "generated"
-    RUNTIME_FUNCTIONS_JSON = GENERATED_DIR / "runtimefunction.json"
-    THROW_INFOS_JSON = GENERATED_DIR / "throwinfo.json"
 
 
 class MEM:
