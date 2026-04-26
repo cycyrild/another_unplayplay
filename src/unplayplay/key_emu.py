@@ -36,13 +36,22 @@ class KeyEmu:
     def rebase(self, va: int) -> int:
         return rebase(self._image_base, va)
 
-    def __init__(self, sp_client_path: Path) -> None:
-        sp_client_sha256 = hashlib.sha256(sp_client_path.read_bytes())
+    def __init__(self, source: Path | bytes) -> None:
+        sp_client_data: bytes
+
+        if isinstance(source, Path):
+            sp_client_data = source.read_bytes()
+        elif isinstance(source, bytes):
+            sp_client_data = source
+        else:
+            raise TypeError("source must be a Path or bytes")
+
+        sp_client_sha256 = hashlib.sha256(sp_client_data)
 
         if sp_client_sha256.digest() != SP_CLT_SHA2:
             raise ValueError(f"SP client mismatch (v{SP_CLT_VERSION})")
 
-        self._pe = PE(sp_client_path, fast_load=True)
+        self._pe = PE(data=sp_client_data, fast_load=True)
         self._mapped_image = self._pe.get_memory_mapped_image()
 
         self._image_base = getattr(self._pe.OPTIONAL_HEADER, "ImageBase")
