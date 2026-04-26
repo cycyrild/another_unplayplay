@@ -39,7 +39,7 @@ def test_keyemu():
     start = time.perf_counter()
     key_emu = KeyEmu(Path("Spotify.dll"))
     elapsed = time.perf_counter() - start
-    print(f"KeyEmu initialized in {elapsed:.2f} seconds")
+    print(f"KeyEmu initialized in {elapsed * 1000:.2f} ms")
 
     for file_id, obfuscated_key, expected_key in TEST_VECTORS:
         print(f"Testing file_id={file_id}")
