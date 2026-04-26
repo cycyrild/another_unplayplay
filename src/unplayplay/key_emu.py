@@ -1,5 +1,6 @@
 import hashlib
 import logging
+import threading
 from pathlib import Path
 
 from pefile import PE
@@ -59,7 +60,8 @@ class KeyEmu:
             throw_infos_path=PATHS.THROW_INFOS_JSON,
         )
 
-        self._vm_obj_blob: bytearray | None = None
+        self._vm_obj_blob: bytes | None = None
+        self._vm_obj_blob_lock = threading.Lock()
 
     def _create_session(self) -> EmuSession:
         mu = Uc(UC_ARCH_X86, UC_MODE_64)
@@ -112,10 +114,12 @@ class KeyEmu:
         )
 
         if self._vm_obj_blob is None:
-            self._init_runtime(mu, vm_obj, vm_rt_context)
-            self._vm_obj_blob = session.vm_obj.read()
-        else:
-            vm_obj.write(bytes(self._vm_obj_blob))
+            with self._vm_obj_blob_lock:
+                if self._vm_obj_blob is None:
+                    self._init_runtime(mu, vm_obj, vm_rt_context)
+                    self._vm_obj_blob = bytes(session.vm_obj.read())
+
+        vm_obj.write(self._vm_obj_blob)
 
         return session
 
