@@ -122,13 +122,16 @@ def dispatch_cpp_exception(state: SehRuntimeState, mu: Uc, pExceptionObject: int
     exc: ThrownException = build_thrown_exception_from_static_data(state, pExceptionObject, pThrowInfo)
     ctx: VirtualContext = capture_context_from_throw_entry(mu)
 
+    logger.debug("throw info name: %s", exc.throw_info.name)
+
     logger.debug("catchable types:")
     for ct in iter_catchable_types(exc.throw_info):
         logger.debug(
-            "type_desc=0x%X mdisp=%d size=%d",
+            "type_desc=0x%X mdisp=%d size=%d name=%s",
             catchable_type_descriptor_va(state.image_base, ct),
             ct.mdisp,
             ct.size_or_offset,
+            ct.name,
         )
 
     for _depth in range(MAX_UNWIND_DEPTH):
