@@ -7,13 +7,14 @@ from unplayplay.generated.throwinfo_models import ThrowInfo
 from unplayplay.seh.metadata import get_handler_data
 from unplayplay.seh.state import SehRuntimeState
 
+RF_ADAPTER = TypeAdapter(list[RuntimeFunction])
+TI_ADAPTER = TypeAdapter(list[ThrowInfo])
+
 
 def build_state(image_base: int) -> SehRuntimeState:
-    rf_adapter = TypeAdapter(list[RuntimeFunction])
-    ti_adapter = TypeAdapter(list[ThrowInfo])
 
-    runtime_functions_all = rf_adapter.validate_python(runtimefunction_data)
-    throw_infos_list = ti_adapter.validate_python(throwinfo_data)
+    runtime_functions_all = RF_ADAPTER.validate_python(runtimefunction_data)
+    throw_infos_list = TI_ADAPTER.validate_python(throwinfo_data)
 
     runtime_functions = sorted(
         (rf for rf in runtime_functions_all if get_handler_data(rf) is not None),
