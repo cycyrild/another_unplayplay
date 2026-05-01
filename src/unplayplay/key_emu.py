@@ -1,6 +1,5 @@
 import hashlib
 import logging
-import threading
 from pathlib import Path
 
 from pefile import PE
@@ -64,10 +63,9 @@ class KeyEmu:
 
         self._seh_state = build_state(self._image_base)
 
-        self._vm_obj_blob: bytes | None = None
-        self._vm_obj_blob_lock = threading.Lock()
+        self._vm_obj_blob = self._build_initial_vm_obj_blob()
 
-    def _create_session(self) -> EmuSession:
+    def _create_base_emulator(self) -> tuple[Uc, HeapAllocator]:
         mu = Uc(UC_ARCH_X86, UC_MODE_64)
 
         if not isinstance(self._mapped_image, bytes):
@@ -86,11 +84,34 @@ class KeyEmu:
         runtime.setup_stack(mu)
         runtime.setup_teb(mu)
 
+        mu.hook_add(
+            UC_HOOK_CODE,
+            seh_hook,
+            self._seh_state,
+            begin=self._cxx_throw_exception_va,
+            end=self._cxx_throw_exception_va,
+        )
+
+        return mu, heap
+
+    def _build_initial_vm_obj_blob(self) -> bytes:
+        mu, heap = self._create_base_emulator()
+
         vm_obj = heap.alloc(EMULATOR_SIZES.VM_OBJECT)
         vm_rt_context = heap.alloc(EMULATOR_SIZES.RT_CONTEXT)
+
+        self._init_runtime(mu, vm_obj, vm_rt_context)
+
+        return bytes(vm_obj.read())
+
+    def _create_session(self) -> EmuSession:
+        mu, heap = self._create_base_emulator()
+
+        vm_obj = heap.alloc(EMULATOR_SIZES.VM_OBJECT)
         vm_init_value = heap.alloc(EMULATOR_SIZES.INIT_VALUE)
 
         vm_init_value.write(VM_CONSTANTS.INIT_VALUE)
+        vm_obj.write(self._vm_obj_blob)
 
         session = EmuSession(
             mu=mu,
@@ -103,27 +124,11 @@ class KeyEmu:
 
         mu.hook_add(
             UC_HOOK_CODE,
-            seh_hook,
-            self._seh_state,
-            begin=self._cxx_throw_exception_va,
-            end=self._cxx_throw_exception_va,
-        )
-
-        mu.hook_add(
-            UC_HOOK_CODE,
             self._hook_aes_key,
             session,
             begin=self._aes_key_va,
             end=self._aes_key_va,
         )
-
-        if self._vm_obj_blob is None:
-            with self._vm_obj_blob_lock:
-                if self._vm_obj_blob is None:
-                    self._init_runtime(mu, vm_obj, vm_rt_context)
-                    self._vm_obj_blob = bytes(session.vm_obj.read())
-
-        vm_obj.write(self._vm_obj_blob)
 
         return session
 
